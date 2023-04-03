@@ -1,0 +1,14 @@
+# Ignore Python venv files
+venv/
+env/
+*.pyc
+
+# Ignore pipenv files
+Pipfile.lock
+
+# Ignore other generated files
+__pycache__/
+*.egg-info/
+*.egg/
+*.log
+
