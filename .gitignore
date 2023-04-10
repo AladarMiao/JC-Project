@@ -11,4 +11,6 @@ __pycache__/
 *.egg-info/
 *.egg/
 *.log
+*.sh
+*.h5
 
