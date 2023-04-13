@@ -1,12 +1,8 @@
-python3 -m venv env 
+1. install Anaconda
 
-source env/bin/activate
+2. conda create --name tf --file requirements.txt
 
-pip3 install ipykernel
+3. conda activate tf
 
-python3 -m ipykernel install --user --name=env
+4. open the notebook in that environment, and you should be good to go
 
-pip install -r requirements.txt
-
-open the notebook in that environment, and you should be good to go
-
