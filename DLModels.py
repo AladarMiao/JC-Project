@@ -41,11 +41,10 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
 
     def __init__(self):
         super().__init__()
-        self.define_model()
 
-    def define_model(self):
+    def define_model(self, height, width):
         #Feel free to adjust this accordingly
-        x = Input(shape=(28, 28,1))
+        x = Input(shape=(height, width, 1))
 
         # Encoder
         conv1_1 = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
@@ -60,15 +59,19 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         up1 = UpSampling2D((2, 2))(conv2_1)
         conv2_2 = Conv2D(8, (3, 3), activation='relu', padding='same')(up1)
         up2 = UpSampling2D((2, 2))(conv2_2)
-        conv2_3 = Conv2D(16, (3, 3), activation='relu')(up2)
+        conv2_3 = Conv2D(16, (3, 3), activation='relu', padding='same')(up2)
         up3 = UpSampling2D((2, 2))(conv2_3)
         r = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(up3)
 
         autoencoder = Model(inputs=x, outputs=r)
         autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
         self.model = autoencoder
+        self.model.summary()
 
     def train_model(self, X_train, X_test, checkpoint_filepath='model_checkpoint.h5'):
+        self.height = X_train.shape[1]
+        self.width = X_train.shape[2]
+        self.define_model(self.height, self.width)
         checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
         # Train the model with checkpoints
@@ -98,7 +101,7 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         for i in range(n):
             # display original
             ax = plt.subplot(3, n, i+1)
-            plt.imshow(X_test[i].reshape(28, 28))
+            plt.imshow(X_test[i].reshape(self.height, self.width))
             plt.gray()
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
@@ -106,7 +109,7 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
 
             # display reconstruction
             ax = plt.subplot(3, n, i+n+1)
-            plt.imshow(decoded_imgs[i].reshape(28, 28))
+            plt.imshow(decoded_imgs[i].reshape(self.height, self.width))
             plt.gray()
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
