@@ -1,6 +1,6 @@
 from DLModels import ConvolutionalAutoencoder
 from ImageResizer import ImageResizer
-from Util import isImage
+from Util import is_image
 from PIL import Image
 import tensorflow as tf
 import os
@@ -20,8 +20,8 @@ val_resizer.resize_images()
 val_path = val_resizer.new_folder
 
 # Get a list of all image filenames
-train_files = [os.path.join(train_path, f) for f in os.listdir(train_path) if isImage(f)]
-val_files = [os.path.join(val_path, f) for f in os.listdir(val_path) if isImage(f)]
+train_files = [os.path.join(train_path, f) for f in os.listdir(train_path) if is_image(f)]
+val_files = [os.path.join(val_path, f) for f in os.listdir(val_path) if is_image(f)]
 
 # Create empty NumPy arrays to store the training and test images
 X_train = np.empty((len(train_files), height, width), dtype=np.float32)

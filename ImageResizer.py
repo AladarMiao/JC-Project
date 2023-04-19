@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from Util import isImage
+from Util import is_image
 
 class ImageResizer:
     """
@@ -31,7 +31,7 @@ class ImageResizer:
 
         # Loop through all images in the folder
         for file_name in os.listdir(self.path):
-            if isImage(file_name):
+            if is_image(file_name):
                 # Open the image
                 image = Image.open(os.path.join(self.path, file_name))
 
