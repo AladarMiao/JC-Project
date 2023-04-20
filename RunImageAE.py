@@ -1,41 +1,20 @@
 from DLModels import ConvolutionalAutoencoder
 from ImageResizer import ImageResizer
-from Util import is_image
-from PIL import Image
 import tensorflow as tf
-import os
-import numpy as np
 
 print(tf.config.list_physical_devices('GPU'))
 nb_classes = 10
 
 print("Resize Training Set")
 train_resizer = ImageResizer()
-train_resizer.resize_images()
-width, height, train_path = train_resizer.new_width, train_resizer.new_height, train_resizer.new_folder
+X_train = train_resizer.resize_images()
+width, height = train_resizer.new_width, train_resizer.new_height
+print(width)
+print(height)
 
 print("Resize Validation Set")
 val_resizer = ImageResizer()
-val_resizer.resize_images()
-val_path = val_resizer.new_folder
-
-# Get a list of all image filenames
-train_files = [os.path.join(train_path, f) for f in os.listdir(train_path) if is_image(f)]
-val_files = [os.path.join(val_path, f) for f in os.listdir(val_path) if is_image(f)]
-
-# Create empty NumPy arrays to store the training and test images
-X_train = np.empty((len(train_files), height, width), dtype=np.float32)
-X_val = np.empty((len(val_files), height, width), dtype=np.float32)
-
-# Load the training images into the X_train array
-for i, filename in enumerate(train_files):
-    image = Image.open(filename)
-    X_train[i] = np.asarray(image, dtype=np.float32) / 255.0 # Normalize the pixel values to between 0 and 1
-
-# Load the test images into the X_test array
-for i, filename in enumerate(val_files):
-    image = Image.open(filename)
-    X_val[i] = np.asarray(image, dtype=np.float32) / 255.0 # Normalize the pixel values to between 0 and 1
+X_val = val_resizer.resize_images()
 
 # Print the shapes of the X_train and X_test arrays
 print('X_train shape:', X_train.shape)

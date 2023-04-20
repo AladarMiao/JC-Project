@@ -1,7 +1,6 @@
 from keras.models import Model, load_model
 from keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Conv2D, MaxPooling2D, UpSampling2D, Cropping1D
 from keras.callbacks import ModelCheckpoint
-from sklearn.model_selection import train_test_split
 import datetime as dt
 import matplotlib.pyplot as plt
 
@@ -11,9 +10,6 @@ class DLModel:
         self.history = None
 
     def train(self):
-        pass
-
-    def detect(self, new_data):
         pass
 
     def define_model(self):
@@ -71,6 +67,8 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
     def train_model(self, X_train, X_test, checkpoint_filepath='model_checkpoint.h5'):
         self.height = X_train.shape[1]
         self.width = X_train.shape[2]
+        print(self.height)
+        print(self.width)
         self.define_model(self.height, self.width)
         checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
