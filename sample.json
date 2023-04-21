@@ -1,0 +1,17 @@
+{
+  "is_image": true,
+  "image_train_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
+  "image_val_path": "/mnt/c/Users/alada/Downloads/data/validation/DimpleDot",
+  "csv_path": "path/to/csv/file",
+  "drop_duplicates": true,
+  "impute_missing_values": "mean",
+  "width": 200,
+  "height": 200,
+  "principal_components": 2,
+  "num_clusters": 10,
+  "clustering_algorithm": "k-means",
+  "dimension_reduction_algorithm": "PCA",
+  "classifier": "Logistic Regression",
+  "DL_model": "ConvolutionalAutoencoder",
+  "batch_size": 32
+}

@@ -1,20 +1,23 @@
 from DLModels import ConvolutionalAutoencoder
-from ImageResizer import ImageResizer
+from DataPreprocessor import DataPreprocessor
 import tensorflow as tf
+import json
 
 print(tf.config.list_physical_devices('GPU'))
 nb_classes = 10
 
+# Open the JSON file for reading
+with open('sample.json') as f:
+    # Load the contents of the file into a variable
+    data = json.load(f)
+
+data_preprocessor = DataPreprocessor(data["is_image"])
+
 print("Resize Training Set")
-train_resizer = ImageResizer()
-X_train = train_resizer.resize_images()
-width, height = train_resizer.new_width, train_resizer.new_height
-print(width)
-print(height)
+X_train = data_preprocessor.resize_images(data["image_train_path"], data["width"], data["height"])
 
 print("Resize Validation Set")
-val_resizer = ImageResizer()
-X_val = val_resizer.resize_images()
+X_val = data_preprocessor.resize_images(data["image_val_path"], data["width"], data["height"])
 
 # Print the shapes of the X_train and X_test arrays
 print('X_train shape:', X_train.shape)

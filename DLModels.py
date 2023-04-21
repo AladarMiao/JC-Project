@@ -67,8 +67,6 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
     def train_model(self, X_train, X_test, checkpoint_filepath='model_checkpoint.h5'):
         self.height = X_train.shape[1]
         self.width = X_train.shape[2]
-        print(self.height)
-        print(self.width)
         self.define_model(self.height, self.width)
         checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
