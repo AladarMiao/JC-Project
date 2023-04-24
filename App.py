@@ -35,13 +35,23 @@ class App:
                 self.clustering = getClusteringClass(json_parameters["clustering_algorithm"])
                 print("Training set clustering")
                 self.clustering.cluster(train)
+<<<<<<< HEAD
 
                 self.clustering.silhouette_score()
+=======
+                print("Validation set clustering")
+                self.clustering.cluster(val)
+            if json_parameters["classifier_algorithm"]:
+                self.classifier = getClusteringClass(json_parameters["classifier"])
+
+                #TODO: Align on how we include labels in our data -- e.g. last column of train data?
+>>>>>>> c2d3790 (Refactor the Clustering classes)
         else:
             self.preprocessor = DataPreprocessor(images_train_path=json_parameters["images_train_path"],
                                                  images_validation_path=json_parameters["images_validation_path"])
             if json_parameters["new_width"]:
                 self.preprocessor.resize_images(json_parameters["new_width"],  json_parameters["new_height"])
+<<<<<<< HEAD
 
         json_parameters = self.preprocessor.return_data()
         print(json_parameters.shape)
@@ -81,3 +91,5 @@ class App:
 
         # Print the score
         print("Silhouette score:", silhouette_score)
+=======
+>>>>>>> c2d3790 (Refactor the Clustering classes)
