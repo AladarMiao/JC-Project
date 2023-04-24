@@ -4,15 +4,17 @@ from Clustering.Clustering import Clustering
 
 
 class IsolationForestClustering(Clustering):
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self, n_clusters=2):
+        super().__init__(n_clusters)
 
-    def cluster(self, contamination=None):
+    def cluster(self, data, n_clusters = None, contamination=None):
+        if n_clusters is None:
+            n_clusters = self.n_clusters
         if contamination is None:
             contamination = 0.05
         self.model = IsolationForest(contamination=contamination)
-        self.model.fit(self.data)
-        self.labels = self.model.predict(self.data)
+        self.model.fit(data)
+        labels = self.model.predict(data)
 
         #plot the clusters
-        self.plot_clusters(self.model)
+        self.plot_clusters(data, labels)

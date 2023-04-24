@@ -1,36 +1,36 @@
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 from sklearn.metrics import f1_score, recall_score, precision_score, silhouette_score
 class Clustering:
-    def __init__(self, data):
+    def __init__(self, n_clusters=2):
+        self.n_clusters = n_clusters
         self.model = None
-        self.data = data
         self.pc_to_plot = 2
 
         #used to calculate different scores, if needed
         self.labels = None
+    #
+    # def f1_score(self, labels_true):
+    #     return f1_score(labels_true, self.labels)
+    #
+    # def recall_score(self, labels_true):
+    #     return recall_score(labels_true, self.labels)
+    #
+    # def precision_score(self, labels_true):
+    #     return precision_score(labels_true, self.labels)
 
-    def f1_score(self, labels_true):
-        return f1_score(labels_true, self.labels)
+    def silhouette_score(self, data, labels):
+        return silhouette_score(data, labels)
 
-    def recall_score(self, labels_true):
-        return recall_score(labels_true, self.labels)
-
-    def precision_score(self, labels_true):
-        return precision_score(labels_true, self.labels)
-
-    def silhouette_score(self, data):
-        return silhouette_score(data, self.labels)
-
-    def cluster(self):
+    def cluster(self, data):
         raise NotImplementedError()
 
-    def plot_clusters(self, model):
+    def plot_clusters(self, data, labels):
         # Fit PCA to the data
         pca = PCA(n_components=2)
-        X_pca = pca.fit_transform(self.data)
+        X_pca = pca.fit_transform(data)
 
         # Get the cluster labels and the number of clusters
-        labels = self.labels
         n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
 
         # Plot the data points colored by cluster

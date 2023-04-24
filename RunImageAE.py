@@ -11,13 +11,11 @@ with open('sample.json') as f:
     # Load the contents of the file into a variable
     data = json.load(f)
 
-data_preprocessor = DataPreprocessor(data["is_image"])
+data_preprocessor = DataPreprocessor(data["is_image"], images_train_path=data["image_train_path"],
+                                     images_validation_path=data["image_validation_path"])
 
-print("Resize Training Set")
-X_train = data_preprocessor.resize_images(data["image_train_path"], data["width"], data["height"])
-
-print("Resize Validation Set")
-X_val = data_preprocessor.resize_images(data["image_val_path"], data["width"], data["height"])
+print("Resize Training and Validation Set")
+X_train, X_val = data_preprocessor.resize_images(data["new_width"], data["new_height"])
 
 # Print the shapes of the X_train and X_test arrays
 print('X_train shape:', X_train.shape)

@@ -1,14 +1,14 @@
 from sklearn.cluster import DBSCAN
 
 from Clustering.Clustering import Clustering
-import warnings
 
 class DBSCANClustering(Clustering):
-    def __init__(self, data):
-        super().__init__(data)
+    def __init__(self, n_clusters=2):
+        super().__init__(n_clusters)
 
-    def cluster(self, eps=None, min_samples=None):
-        warnings.filterwarnings("ignore")
+    def cluster(self, data, n_clusters=None, eps=None, min_samples=None):
+        if n_clusters is None:
+            n_clusters = self.n_clusters
         if eps is None:
             #             eps = np.sqrt(self.data.shape[1])
             eps=5000
@@ -16,7 +16,7 @@ class DBSCANClustering(Clustering):
             min_samples = 2 * self.data.shape[1]
         dbscan = DBSCAN(eps=eps, min_samples=min_samples)
         self.model = dbscan
-        self.labels = dbscan.fit_predict(self.data)
+        labels = dbscan.fit_predict(data)
 
         #plot the clusters
-        self.plot_clusters(self.model)
+        self.plot_clusters(data, labels)
