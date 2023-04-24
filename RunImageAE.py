@@ -1,5 +1,5 @@
 from DLModels import ConvolutionalAutoencoder
-from DataPreprocessor import DataPreprocessor
+from DataPreprocessor.DataPreprocessor import DataPreprocessor
 import tensorflow as tf
 import json
 

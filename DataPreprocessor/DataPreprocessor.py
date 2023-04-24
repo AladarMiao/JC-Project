@@ -8,13 +8,16 @@ from sklearn.impute import SimpleImputer
 import os
 
 class DataPreprocessor:
-    def __init__(self, is_image, csv_file=None):
+    def __init__(self, is_image, csv_train = None, csv_validation = None, images_train_path = None, images_validation_path=None):
         self.file_type = "image" if is_image else "csv"
         if not is_image:
-            self.filename = csv_file
-            self.df = pd.read_csv(self.filename)
+            self.df_train = pd.read_csv(csv_train)
+            self.df_validation = pd.read_csv(csv_validation)
+        else:
+            self.images_train = [os.path.join(images_train_path, f) for f in os.listdir(images_train_path) if is_image(f)]
+            self.images_validation = [os.path.join(images_validation_path, f) for f in os.listdir(images_validation_path) if is_image(f)]
 
-    def drop_duplicates(self):
+def drop_duplicates(self):
         remove_duplicates = input("Do you want to remove duplicates? Input T or F ") == "T"
         if remove_duplicates:
             self.df.drop_duplicates(inplace=True)
@@ -54,7 +57,7 @@ class DataPreprocessor:
         """
         Resizes all images in a folder
         """
-        # count number of images in this path
+        # get all images in this path
         files = [os.path.join(path, f) for f in os.listdir(path) if is_image(f)]
 
         # create np array for the dataset
@@ -68,3 +71,7 @@ class DataPreprocessor:
             dataset[i] = np.asarray(new_image, dtype=np.float32) / 255.0 # Normalize the pixel values to between 0 and 1
 
         return dataset
+    #
+    # def rotate_images(self, path, degrees_clockwise):
+    #
+    # def flip_images(self):
