@@ -3,18 +3,25 @@ from PIL import Image
 import pandas as pd
 from IPython.display import display
 from sklearn.impute import SimpleImputer
-from Util import isImage
 import os
 
+
+def isImage(filename):
+    return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))
+
+
 class DataPreprocessor:
-    def __init__(self, csv_train_path = None, csv_validation_path = None, images_train_path = None, images_validation_path=None):
-        #TODO: add error handling for incorrect file types
+    def __init__(self, csv_train_path=None, csv_validation_path=None, images_train_path=None,
+                 images_validation_path=None):
+        # TODO: add error handling for incorrect file types
         if not images_train_path:
             self.df_train = pd.read_csv(csv_train_path)
             self.df_validation = pd.read_csv(csv_validation_path)
         else:
-            self.images_train = [os.path.join(images_train_path, f) for f in os.listdir(images_train_path) if isImage(f)]
-            self.images_validation = [os.path.join(images_validation_path, f) for f in os.listdir(images_validation_path) if isImage(f)]
+            self.images_train = [os.path.join(images_train_path, f) for f in os.listdir(images_train_path) if
+                                 isImage(f)]
+            self.images_validation = [os.path.join(images_validation_path, f) for f in
+                                      os.listdir(images_validation_path) if isImage(f)]
 
     def drop_duplicates(self):
         remove_duplicates = input("Do you want to remove duplicates? Input T or F ") == "T"
@@ -25,12 +32,12 @@ class DataPreprocessor:
 
     def impute_missing(self, method='mean'):
 
-        impute_strategy = input("How do you want to impute your missing values? e.g. \"median\", \"0\" " )
+        impute_strategy = input("How do you want to impute your missing values? e.g. \"median\", \"0\" ")
         imputer = SimpleImputer()
         if impute_strategy.isdigit():
             imputer = SimpleImputer(strategy='constant', fill_value=int(impute_strategy))
         else:
-            imputer = SimpleImputer(strategy = impute_strategy)
+            imputer = SimpleImputer(strategy=impute_strategy)
         self.df_train = pd.DataFrame(imputer.fit_transform(self.df_train), columns=self.df_train.columns)
         self.df_validation = pd.DataFrame(imputer.transform(self.df_validation), columns=self.df_validation.columns)
         return self.df_train, self.df_validation
@@ -63,13 +70,15 @@ class DataPreprocessor:
             image = Image.open(filename)
             # Resize the image
             new_image = image.resize((new_width, new_height))
-            training_set[i] = np.asarray(new_image, dtype=np.float32) / 255.0 # Normalize the pixel values to between 0 and 1
+            training_set[i] = np.asarray(new_image,
+                                         dtype=np.float32) / 255.0  # Normalize the pixel values to between 0 and 1
 
         for i, filename in enumerate(self.images_validation):
             image = Image.open(filename)
             # Resize the image
             new_image = image.resize((new_width, new_height))
-            validation_set[i] = np.asarray(new_image, dtype=np.float32) / 255.0 # Normalize the pixel values to between 0 and 1
+            validation_set[i] = np.asarray(new_image,
+                                           dtype=np.float32) / 255.0  # Normalize the pixel values to between 0 and 1
 
         self.images_train = training_set
         self.images_validation = validation_set

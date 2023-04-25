@@ -1,4 +1,6 @@
 from sklearn.metrics import accuracy_score
+
+
 class Classifier:
 
     def __init__(self):
@@ -13,5 +15,5 @@ class Classifier:
 
     def score(self, X, y):
         y_pred = self.predict(X)
-        print(accuracy_score(y,y_pred))
+        print(accuracy_score(y, y_pred))
         return accuracy_score(y, y_pred)

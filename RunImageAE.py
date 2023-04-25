@@ -1,4 +1,4 @@
-from DLModels import ConvolutionalAutoencoder
+from Constants import get_dl_class
 from DataPreprocessor.DataPreprocessor import DataPreprocessor
 import tensorflow as tf
 import json
@@ -7,30 +7,38 @@ print(tf.config.list_physical_devices('GPU'))
 nb_classes = 10
 
 # Open the JSON file for reading
-with open('sample.json') as f:
+with open('RunImageAE.json') as f:
     # Load the contents of the file into a variable
     data = json.load(f)
 
-data_preprocessor = DataPreprocessor(data["is_image"], images_train_path=data["image_train_path"],
-                                     images_validation_path=data["image_validation_path"])
+preprocessor_parameters = data["preprocessor_parameters"]
+data_preprocessor = DataPreprocessor(preprocessor_parameters["is_image"],
+                                     images_train_path=preprocessor_parameters["image_train_path"],
+                                     images_validation_path=preprocessor_parameters["image_validation_path"])
 
 print("Resize Training and Validation Set")
-X_train, X_val = data_preprocessor.resize_images(data["new_width"], data["new_height"])
+X_train, X_val = data_preprocessor.resize_images(preprocessor_parameters.get("new_width", 500),
+                                                 preprocessor_parameters.get("new_height", 500))
 
 # Print the shapes of the X_train and X_test arrays
 print('X_train shape:', X_train.shape)
 print('X_test shape:', X_val.shape)
 
-# y_train = np_utils.to_categorical(y_train, nb_classes)
-# y_test = np_utils.to_categorical(y_test, nb_classes)
-
+dl_parameters = data["DL_parameters"]
 # Create a convolutional autoencoder object
-autoencoder = ConvolutionalAutoencoder()
+autoencoder = get_dl_class(dl_parameters["model_type"])
 
 # Train the autoencoder
-autoencoder.train_model(X_train, X_val)
+autoencoder.train_model(X_train,
+                        X_val,
+                        dl_parameters.get("batch_size", 128),
+                        dl_parameters.get("epochs", 10),
+                        dl_parameters.get("checkpoint_filepath", "model_checkpoint.h5"),
+                        dl_parameters.get("pretrained_model_path", None))
 
 # Plot the loss
 autoencoder.plot_loss()
 
-autoencoder.plot_decoded_imgs(X_val)
+autoencoder.plot_decoded_imgs(X_val,
+                              preprocessor_parameters.get("new_height", 500),
+                              preprocessor_parameters.get("new_width", 500))

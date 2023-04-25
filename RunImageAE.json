@@ -22,8 +22,9 @@
     "algo": "Logistic Regression"
   },
   "DL_parameters": {
-    "model": "ConvolutionalAutoencoder",
+    "model_type": "ConvolutionalAutoencoder",
+    "pretrained_model_path": "/mnt/c/Users/alada/JC_code/my_model_20230425_113009.h5",
     "batch_size": 32,
-    "epoch": 200
+    "epochs": 200
   }
 }
