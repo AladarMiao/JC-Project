@@ -23,7 +23,7 @@
   },
   "DL_parameters": {
     "model_type": "ConvolutionalAutoencoder",
-    "pretrained_model_path": "/mnt/c/Users/alada/JC_code/my_model_20230425_113009.h5",
+    "pretrained_model_path": "/mnt/c/Users/alada/JC_code/my_model_20230425_123848.h5",
     "batch_size": 128,
     "epochs": 200
   }

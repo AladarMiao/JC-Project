@@ -61,7 +61,7 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         r = Conv2D(1, (3, 3), activation='relu', padding='same')(up3)
 
         autoencoder = Model(inputs=x, outputs=r)
-        autoencoder.compile(optimizer='adam', loss=mean_absolute_error)
+        autoencoder.compile(optimizer='adadelta', loss=mean_absolute_error)
         self.model = autoencoder
         self.model.summary()
 
@@ -98,7 +98,7 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
 
     def plot_decoded_imgs(self, X_test, height, width):
         decoded_imgs = self.model.predict(X_test)
-        n = 10
+        n = 20
         plt.figure(figsize=(20, 6))
         for i in range(n):
             # display original
