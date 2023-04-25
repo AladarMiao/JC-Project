@@ -4,7 +4,6 @@ import tensorflow as tf
 import json
 
 print(tf.config.list_physical_devices('GPU'))
-nb_classes = 10
 
 # Open the JSON file for reading
 with open('RunImageAE.json') as f:

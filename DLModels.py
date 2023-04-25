@@ -93,6 +93,8 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         plt.xlabel('epoch')
         plt.legend(['train', 'validation'], loc='upper right')
         plt.show()
+        # save the plot to a PNG file
+        plt.savefig('plot_loss.png')
 
     def plot_decoded_imgs(self, X_test, height, width):
         decoded_imgs = self.model.predict(X_test)
@@ -115,3 +117,4 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
             ax.get_yaxis().set_visible(False)
 
         plt.show()
+        plt.savefig('plot_decoded_imgs.png')
