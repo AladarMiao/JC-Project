@@ -1,6 +1,5 @@
 from sklearn.metrics import accuracy_score
 
-
 class Classifier:
 
     def __init__(self):

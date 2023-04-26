@@ -5,34 +5,37 @@ from IPython.display import display
 from sklearn.impute import SimpleImputer
 import os
 
+from Constants import TABULAR, IMAGE
+
 
 def isImage(filename):
     return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))
 
 
 class DataPreprocessor:
-    def __init__(self, csv_train_path=None, csv_validation_path=None, images_train_path=None,
-                 images_validation_path=None):
+    def __init__(self, is_image_data, csv_train_path=None, csv_validation_path=None, images_train_path=None,
+                 images_validation_path=None, labeled=None, images_train_labels=None, images_validation_labels=None):
         # TODO: add error handling for incorrect file types
-        if not images_train_path:
+        if not is_image_data:
+            self.filetype = TABULAR
             self.df_train = pd.read_csv(csv_train_path)
             self.df_validation = pd.read_csv(csv_validation_path)
+            if labeled:
+                self.train_labels = self.df_train.iloc[:, -1].values
+                self.validation_labels = self.df_validation.iloc[:, -1].values
+                self.df_train = self.df_train.iloc[:, :-1]
+                self.df_validation = self.df_validation.iloc[:, :-1]
         else:
+            self.filetype = IMAGE
             self.images_train = [os.path.join(images_train_path, f) for f in os.listdir(images_train_path) if
                                  isImage(f)]
             self.images_validation = [os.path.join(images_validation_path, f) for f in
                                       os.listdir(images_validation_path) if isImage(f)]
+            if labeled:
+                self.train_labels = images_train_labels
+                self.validation_labels = images_validation_labels
 
-    def drop_duplicates(self):
-        remove_duplicates = input("Do you want to remove duplicates? Input T or F ") == "T"
-        if remove_duplicates:
-            self.df_train.drop_duplicates(inplace=True)
-            self.df_validation.drop_duplicates(inplace=True)
-        return self.df_train, self.df_validation
-
-    def impute_missing(self, method='mean'):
-
-        impute_strategy = input("How do you want to impute your missing values? e.g. \"median\", \"0\" ")
+    def impute_missing(self, impute_strategy):
         imputer = SimpleImputer()
         if impute_strategy.isdigit():
             imputer = SimpleImputer(strategy='constant', fill_value=int(impute_strategy))
@@ -47,16 +50,20 @@ class DataPreprocessor:
         display(self.df_validation)
 
     def return_train_data(self):
-        return self.df_train.iloc[:, :-1].values
+        if self.filetype == IMAGE:
+            return self.images_train
+        return self.df_train
 
     def return_train_labels(self):
-        return self.df_train.iloc[:, -1].values
+        return self.train_labels
 
     def return_validation_data(self):
-        return self.df_validation.iloc[:, :-1].values
+        if self.filetype == IMAGE:
+            return self.images_validation
+        return self.df_validation
 
     def return_validation_labels(self):
-        return self.df_validation.iloc[:, -1].values
+        return self.validation_labels
 
     def resize_images(self, new_width, new_height):
         """

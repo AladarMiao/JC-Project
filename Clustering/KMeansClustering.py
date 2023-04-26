@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class KMeansClustering(Clustering):
-    def __init__(self, n_clusters=2):
-        super().__init__(n_clusters)
-
+    def __init__(self, n_clusters=None):
+        super().__init__()
+        if not n_clusters:
+            n_clusters = self.n_clusters
+        kmeans = KMeans(n_clusters=n_clusters)
+        self.model = kmeans
     def elbow_method(self):
         # Calculate the within-cluster sum of squares (WCSS) for each k value
         wcss = []
@@ -38,13 +41,3 @@ class KMeansClustering(Clustering):
         print(f"Optimal number of clusters: {optimal_k}")
         self.n_clusters = optimal_k
         return optimal_k
-
-    def cluster(self, data, n_clusters=None):
-        if n_clusters is None:
-            n_clusters = self.elbow_method()
-        kmeans = KMeans(n_clusters=n_clusters)
-        self.model = kmeans
-        labels = kmeans.fit_predict(data)
-
-        #plot the clusters
-        self.plot_clusters(data, labels)

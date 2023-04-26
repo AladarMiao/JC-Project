@@ -12,6 +12,9 @@ from DLModels import ConvolutionalAutoencoder
 from DimensionReduction.MyPCA import MyPCA
 from DimensionReduction.MyTSNE import MyTSNE
 
+TABULAR = "tabular"
+IMAGE = "image"
+
 
 def get_clustering_class(user_input_clustering_algorithm, n_clusters=2):
     # create a dictionary that maps user input to the corresponding class

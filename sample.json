@@ -1,11 +1,11 @@
 {
+  "labeled": false,
   "preprocessor_parameters": {
-    "is_image": true,
-    "image_train_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
-    "image_validation_path": "/mnt/c/Users/alada/Downloads/data/validation/DimpleDot",
-    "csv_train_path": "path/to/csv/file",
-    "csv_validation_path": "path/to/csv/file",
-    "drop_duplicates": true,
+    "is_image_data": false,
+    "images_train_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
+    "images_validation_path": "/mnt/c/Users/alada/Downloads/data/validation/DimpleDot",
+    "csv_train_path": "/mnt/c/Users/alada/JC_Code/mura_data.csv",
+    "csv_validation_path": "/mnt/c/Users/alada/JC_Code/mura_data.csv",
     "impute_missing_values": "mean",
     "new_width": 200,
     "new_height": 200
@@ -15,8 +15,7 @@
     "principal_components": 2
   },
   "clustering_parameters": {
-    "algo": "k-means",
-    "num_clusters": 10
+    "algo": "kmeans"
   },
   "classifier_parameters": {
     "algo": "Logistic Regression"
