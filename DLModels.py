@@ -1,9 +1,12 @@
 from keras.models import Model, load_model
-from keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Conv2D, MaxPooling2D, UpSampling2D, Cropping1D
+from keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Conv2D, MaxPooling2D, UpSampling2D, Cropping1D, BatchNormalization
 from keras.callbacks import ModelCheckpoint
 import datetime as dt
 import matplotlib.pyplot as plt
-from tensorflow.keras.losses import mean_absolute_error
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.losses import mean_absolute_error, mean_squared_error
+import tensorflow as tf
+
 
 class DLModel:
     def __init__(self):
@@ -39,29 +42,45 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
     def __init__(self):
         super().__init__()
 
-    def define_model(self, height, width):
-        #Feel free to adjust this accordingly
+    def define_model(self, height, width, a1=0.5, a2=0.5, reg=0.01):
+        # Input layer
         x = Input(shape=(height, width, 1))
 
         # Encoder
-        conv1_1 = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        pool1 = MaxPooling2D((2, 2), padding='same')(conv1_1)
-        conv1_2 = Conv2D(8, (3, 3), activation='relu', padding='same')(pool1)
-        pool2 = MaxPooling2D((2, 2), padding='same')(conv1_2)
-        conv1_3 = Conv2D(8, (3, 3), activation='relu', padding='same')(pool2)
-        h = MaxPooling2D((2, 2), padding='same')(conv1_3)
+        conv1_1 = Conv2D(16, (3, 3), activation='relu', input_shape=(400, 400, 1), padding='same', kernel_regularizer=l2(reg))(x)
+        bn1_1 = BatchNormalization()(conv1_1)
+        pool1 = MaxPooling2D((2, 2), padding='same')(bn1_1)
+        conv1_2 = Conv2D(8, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(pool1)
+        bn1_2 = BatchNormalization()(conv1_2)
+        pool2 = MaxPooling2D((2, 2), padding='same')(bn1_2)
+        conv1_3 = Conv2D(8, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(pool2)
+        bn1_3 = BatchNormalization()(conv1_3)
+        h = MaxPooling2D((2, 2), padding='same')(bn1_3)
 
         # Decoder
-        conv2_1 = Conv2D(8, (3, 3), activation='relu', padding='same')(h)
-        up1 = UpSampling2D((2, 2))(conv2_1)
-        conv2_2 = Conv2D(8, (3, 3), activation='relu', padding='same')(up1)
-        up2 = UpSampling2D((2, 2))(conv2_2)
-        conv2_3 = Conv2D(16, (3, 3), activation='relu', padding='same')(up2)
-        up3 = UpSampling2D((2, 2))(conv2_3)
-        r = Conv2D(1, (3, 3), activation='relu', padding='same')(up3)
+        conv2_1 = Conv2D(8, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(h)
+        bn2_1 = BatchNormalization()(conv2_1)
+        up1 = UpSampling2D((2, 2))(bn2_1)
+        conv2_2 = Conv2D(8, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(up1)
+        bn2_2 = BatchNormalization()(conv2_2)
+        up2 = UpSampling2D((2, 2))(bn2_2)
+        conv2_3 = Conv2D(16, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(up2)
+        bn2_3 = BatchNormalization()(conv2_3)
+        up3 = UpSampling2D((2, 2))(bn2_3)
+        r = Conv2D(1, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(up3)
 
+        # Create model
         autoencoder = Model(inputs=x, outputs=r)
-        autoencoder.compile(optimizer='adadelta', loss=mean_absolute_error)
+
+        # Define custom loss function
+        def custom_loss(y_true, y_pred):
+            # ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=1.0)
+            mse_loss = tf.keras.losses.mean_squared_error(y_true, y_pred)
+            loss = mse_loss
+            return loss
+
+        # Compile model with custom loss function
+        autoencoder.compile(optimizer='adam', loss=custom_loss)
         self.model = autoencoder
         self.model.summary()
 

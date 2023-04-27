@@ -7,8 +7,8 @@
     "csv_validation_path": "path/to/csv/file",
     "drop_duplicates": true,
     "impute_missing_values": "mean",
-    "new_width": 200,
-    "new_height": 200
+    "new_width": 400,
+    "new_height": 400
   },
   "dimension_reduction_parameters": {
     "algo": "PCA",
@@ -23,8 +23,8 @@
   },
   "DL_parameters": {
     "model_type": "ConvolutionalAutoencoder",
-    "pretrained_model_path": "/mnt/c/Users/alada/JC_code/my_model_20230425_123848.h5",
-    "batch_size": 128,
-    "epochs": 200
+    "pretrained_model_path": "",
+    "batch_size": 3,
+    "epochs": 300
   }
 }

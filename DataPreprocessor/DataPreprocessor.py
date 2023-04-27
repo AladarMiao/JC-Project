@@ -70,8 +70,8 @@ class DataPreprocessor:
         Resizes all images in a folder
         """
         # create np array for the dataset
-        training_set = np.empty((len(self.images_train), new_width, new_height), dtype=np.uint8)
-        validation_set = np.empty((len(self.images_validation), new_width, new_height), dtype=np.uint8)
+        training_set = np.empty((len(self.images_train), new_width, new_height))
+        validation_set = np.empty((len(self.images_validation), new_width, new_height))
         # Load the training images into the X_train array
         for i, filename in enumerate(self.images_train):
             image = Image.open(filename)
