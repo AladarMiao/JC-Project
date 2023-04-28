@@ -1,43 +1,16 @@
 from keras.models import Model, load_model
-from keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Conv2D, MaxPooling2D, UpSampling2D, Cropping1D, BatchNormalization
+from keras.layers import Input, Dense, Conv1D, MaxPooling1D, UpSampling1D, Conv2D, MaxPooling2D, UpSampling2D, \
+    Cropping1D, BatchNormalization
 from keras.callbacks import ModelCheckpoint
-import datetime as dt
 import matplotlib.pyplot as plt
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.losses import mean_absolute_error, mean_squared_error
 import tensorflow as tf
 
+from DLModels.DLModels import DLModel
 
-class DLModel:
-    def __init__(self):
-        self.model = None
-        self.history = None
 
-    def train(self):
-        pass
-
-    def define_model(self):
-        pass
-
-    def save_model(self):
-
-        # Get the current time as a string
-        timestamp = dt.datetime.now().strftime('%Y%m%d_%H%M%S')
-
-        # Construct the filename with the timestamp
-        filename = f'my_model_{timestamp}.h5'
-
-        # Save the model to the file with the timestamped name
-        self.model.save(filename)
-
-        # Print message indicating the model has been saved
-        print(f'Model saved to {filename}')
-
-class AnomalyDetectionModel(DLModel):
-    def __init__(self):
-        super().__init__()
-
-class ConvolutionalAutoencoder(AnomalyDetectionModel):
+class ConvolutionalAutoencoder(DLModel):
 
     def __init__(self):
         super().__init__()
@@ -83,7 +56,7 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
             ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=256.0)
             print(ms_ssim_loss)
             # Compute the mean squared error between the two images and take the mean
-            mse_loss = tf.keras.losses.mean_squared_error(y_true, y_pred)
+            mse_loss = mean_squared_error(y_true, y_pred)
             mse_loss = tf.reduce_mean(mse_loss)
             print(mse_loss)
             # Add L2 regularization term
@@ -106,7 +79,8 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
             self.height = x_train.shape[1]
             self.width = x_train.shape[2]
             self.define_model(self.height, self.width)
-        checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+        checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True,
+                                     mode='min')
 
         # Train the model with checkpoints
         self.history = self.model.fit(x_train, x_train, batch_size=batch_size,
@@ -136,15 +110,14 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         plt.figure(figsize=(20, 6))
         for i in range(n):
             # display original
-            ax = plt.subplot(3, n, i+1)
+            ax = plt.subplot(3, n, i + 1)
             plt.imshow(X_test[i].reshape(height, width))
             plt.gray()
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
 
-
             # display reconstruction
-            ax = plt.subplot(3, n, i+n+1)
+            ax = plt.subplot(3, n, i + n + 1)
             plt.imshow(decoded_imgs[i].reshape(height, width))
             plt.gray()
             ax.get_xaxis().set_visible(False)
