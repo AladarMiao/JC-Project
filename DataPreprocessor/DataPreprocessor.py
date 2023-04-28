@@ -86,7 +86,6 @@ class DataPreprocessor:
             new_image = image.resize((new_width, new_height))
             validation_set[i] = np.asarray(new_image,
                                            dtype=np.float32) / 255.0  # Normalize the pixel values to between 0 and 1
-
         self.images_train = training_set
         self.images_validation = validation_set
 

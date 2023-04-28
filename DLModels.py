@@ -42,12 +42,12 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
     def __init__(self):
         super().__init__()
 
-    def define_model(self, height, width, a1=0.5, a2=0.5, reg=0.01):
+    def define_model(self, height, width, a1=0.86, a2=0.14, a3=1, reg=0.01):
         # Input layer
         x = Input(shape=(height, width, 1))
 
         # Encoder
-        conv1_1 = Conv2D(16, (3, 3), activation='relu', input_shape=(400, 400, 1), padding='same', kernel_regularizer=l2(reg))(x)
+        conv1_1 = Conv2D(16, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(x)
         bn1_1 = BatchNormalization()(conv1_1)
         pool1 = MaxPooling2D((2, 2), padding='same')(bn1_1)
         conv1_2 = Conv2D(8, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(reg))(pool1)
@@ -74,9 +74,24 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
 
         # Define custom loss function
         def custom_loss(y_true, y_pred):
-            # ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=1.0)
+            # Add a new dimension to the input tensors, because MS-SSIM assumes(batch_size, height, width, channels)
+            y_true = tf.expand_dims(y_true, axis=-1)
+            y_pred = tf.expand_dims(y_pred, axis=-1)
+
+            # Compute the MS-SSIM loss
+            # TODO: max_val of 1.0 does not work
+            ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=256.0)
+            print(ms_ssim_loss)
+            # Compute the mean squared error between the two images and take the mean
             mse_loss = tf.keras.losses.mean_squared_error(y_true, y_pred)
-            loss = mse_loss
+            mse_loss = tf.reduce_mean(mse_loss)
+            print(mse_loss)
+            # Add L2 regularization term
+            reg_loss = tf.reduce_sum([tf.nn.l2_loss(w) for w in autoencoder.trainable_weights])
+
+            # Combine the losses with the given weights
+            loss = a1 * ms_ssim_loss + a2 * mse_loss + a3 * reg_loss
+
             return loss
 
         # Compile model with custom loss function
@@ -84,18 +99,18 @@ class ConvolutionalAutoencoder(AnomalyDetectionModel):
         self.model = autoencoder
         self.model.summary()
 
-    def train_model(self, X_train, X_test, batch_size, epochs, checkpoint_filepath, pretrained_model_path):
+    def train_model(self, x_train, X_val, batch_size, epochs, checkpoint_filepath, pretrained_model_path):
         if pretrained_model_path:
             self.model = load_model(pretrained_model_path)
         else:
-            self.height = X_train.shape[1]
-            self.width = X_train.shape[2]
+            self.height = x_train.shape[1]
+            self.width = x_train.shape[2]
             self.define_model(self.height, self.width)
         checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
         # Train the model with checkpoints
-        self.history = self.model.fit(X_train, X_train, batch_size=batch_size,
-                                      epochs=epochs, verbose=1, validation_data=(X_test, X_test))
+        self.history = self.model.fit(x_train, x_train, batch_size=batch_size,
+                                      epochs=epochs, verbose=1, validation_data=(X_val, X_val))
 
         self.save_model()
 

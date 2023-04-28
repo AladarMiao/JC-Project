@@ -24,7 +24,7 @@
   "DL_parameters": {
     "model_type": "ConvolutionalAutoencoder",
     "pretrained_model_path": "",
-    "batch_size": 3,
-    "epochs": 300
+    "batch_size": 5,
+    "epochs": 100
   }
 }

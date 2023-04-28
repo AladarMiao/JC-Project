@@ -21,7 +21,7 @@ X_train, X_val = data_preprocessor.resize_images(preprocessor_parameters.get("ne
 
 # Print the shapes of the X_train and X_test arrays
 print('X_train shape:', X_train.shape)
-print('X_test shape:', X_val.shape)
+print('X_val shape:', X_val.shape)
 
 dl_parameters = data["DL_parameters"]
 # Create a convolutional autoencoder object
