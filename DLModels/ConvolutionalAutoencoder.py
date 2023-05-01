@@ -15,7 +15,7 @@ class ConvolutionalAutoencoder(DLModel):
     def __init__(self):
         super().__init__()
 
-    def define_model(self, height, width, a1=0.86, a2=0.14, a3=1, reg=0.01):
+    def define_model(self, height, width, a1=0.86, a2=0.14, reg=0.01):
         # Input layer
         x = Input(shape=(height, width, 1))
 
@@ -47,24 +47,18 @@ class ConvolutionalAutoencoder(DLModel):
 
         # Define custom loss function
         def custom_loss(y_true, y_pred):
-            # Add a new dimension to the input tensors, because MS-SSIM assumes(batch_size, height, width, channels)
-            y_true = tf.expand_dims(y_true, axis=-1)
-            y_pred = tf.expand_dims(y_pred, axis=-1)
-
             # Compute the MS-SSIM loss
-            # TODO: max_val of 1.0 does not work
-            ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=256.0)
-            print(ms_ssim_loss)
+            ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=1.0)
+            ms_ssim_loss = tf.reduce_mean(ms_ssim_loss)
+            ms_ssim_loss_rounded = tf.round(ms_ssim_loss * 1000) / 1000
+
             # Compute the mean squared error between the two images and take the mean
             mse_loss = mean_squared_error(y_true, y_pred)
             mse_loss = tf.reduce_mean(mse_loss)
-            print(mse_loss)
-            # Add L2 regularization term
-            reg_loss = tf.reduce_sum([tf.nn.l2_loss(w) for w in autoencoder.trainable_weights])
+            mse_loss_rounded = tf.round(mse_loss * 1000) / 1000
 
             # Combine the losses with the given weights
-            loss = a1 * ms_ssim_loss + a2 * mse_loss + a3 * reg_loss
-
+            loss = a1 * ms_ssim_loss_rounded + a2 * mse_loss_rounded
             return loss
 
         # Compile model with custom loss function

@@ -8,7 +8,7 @@ from Clustering.DBSCANClustering import DBSCANClustering
 from Clustering.IsolationForestClustering import IsolationForestClustering
 from Clustering.KMeansClustering import KMeansClustering
 from Clustering.MeanShiftClustering import MeanShiftClustering
-from DLModels import ConvolutionalAutoencoder
+from DLModels.ConvolutionalAutoencoder import ConvolutionalAutoencoder
 from DimensionReduction.MyPCA import MyPCA
 from DimensionReduction.MyTSNE import MyTSNE
 

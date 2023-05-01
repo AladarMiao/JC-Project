@@ -12,8 +12,8 @@ with open('RunImageAE.json') as f:
 
 preprocessor_parameters = data["preprocessor_parameters"]
 data_preprocessor = DataPreprocessor(preprocessor_parameters["is_image"],
-                                     images_train_path=preprocessor_parameters["image_train_path"],
-                                     images_validation_path=preprocessor_parameters["image_validation_path"])
+                                     image_train_path=preprocessor_parameters["image_train_path"],
+                                     image_validation_path=preprocessor_parameters["image_validation_path"])
 
 print("Resize Training and Validation Set")
 X_train, X_val = data_preprocessor.resize_images(preprocessor_parameters.get("new_width", 500),

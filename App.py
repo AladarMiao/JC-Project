@@ -30,8 +30,8 @@ if __name__ == '__main__':
         preprocessor = DataPreprocessor(preprocessor_parameters.get("is_image_data"),
                                         csv_train_path=preprocessor_parameters.get("csv_train_path"),
                                         csv_validation_path=preprocessor_parameters.get("csv_validation_path"),
-                                        images_train_path=preprocessor_parameters.get("images_train_path"),
-                                        images_validation_path=preprocessor_parameters.get("images_validation_path"),
+                                        image_train_path=preprocessor_parameters.get("images_train_path"),
+                                        image_validation_path=preprocessor_parameters.get("images_validation_path"),
                                         labeled=labeled,
                                         images_train_labels=preprocessor_parameters.get("images_train_labels"),
                                         images_validation_labels=preprocessor_parameters.get("images_validation_labels"))
