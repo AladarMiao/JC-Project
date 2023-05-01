@@ -50,6 +50,8 @@ class ConvolutionalAutoencoder(DLModel):
             # Compute the MS-SSIM loss
             ms_ssim_loss = 1 - tf.image.ssim_multiscale(y_true, y_pred, max_val=1.0)
             ms_ssim_loss = tf.reduce_mean(ms_ssim_loss)
+
+            # Round the loss to three decimal places, due to numerical instability issues
             ms_ssim_loss_rounded = tf.round(ms_ssim_loss * 1000) / 1000
 
             # Compute the mean squared error between the two images and take the mean

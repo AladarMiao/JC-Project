@@ -81,6 +81,8 @@ class DataPreprocessor:
         for i, filename in enumerate(self.images_train):
             image = tf.io.read_file(filename)
             image = tf.image.decode_image(image)
+            # CONVERSION HAS TO BE DONE BEFORE RESIZING
+            # REFERENCE: https://stackoverflow.com/questions/54972167/bug-with-tf-image-convert-image-dtype-values-not-scaling
             resized_image = tf.image.convert_image_dtype(image, tf.float32)
             resized_image = tf.image.resize(resized_image, [new_height, new_width])
             training_set[i] = resized_image
