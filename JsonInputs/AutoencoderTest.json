@@ -8,7 +8,8 @@
     "drop_duplicates": true,
     "impute_missing_values": "mean",
     "new_width": 400,
-    "new_height": 400
+    "new_height": 400,
+    "labeled": true
   },
   "dimension_reduction_parameters": {
     "algo": "PCA",

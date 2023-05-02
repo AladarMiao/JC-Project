@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import os
 from sklearn.decomposition import PCA
 from sklearn.metrics import f1_score, recall_score, precision_score, silhouette_score, accuracy_score
-
+from datetime import datetime
+import pandas as pd
 
 class Clustering:
     def __init__(self, n_clusters=2):
@@ -15,32 +16,40 @@ class Clustering:
 
     def cluster(self, data, actual_labels=None):
         predicted_labels = self.model.fit_predict(data)
-        if actual_labels:
-            accuracy = accuracy_score(actual_labels, predicted_labels)
-            print(f"Accuracy: {accuracy}")
-            f1 = f1_score(actual_labels, predicted_labels, average='weighted')
-            print(f"F1: {f1}")
-            recall = recall_score(actual_labels, predicted_labels, average='weighted')
-            print(f"Recall: {recall}")
-            precision = precision_score(actual_labels, predicted_labels, average='weighted')
-            print(f"Precision: {precision}")
+        if actual_labels is not None:
+            labels_cat = pd.Categorical(actual_labels)
+            label_dict = dict(enumerate(labels_cat.categories))
+
+            # Map each category to a unique integer code
+            labels_codes = labels_cat.codes
+            print(f"Labels codes: {labels_codes}")
+            print(f"Labels mapping: {label_dict}")
+
+            self.plot_clusters(data, labels_codes, n_components=self.n_clusters, title="Correct Labels")
+
+            print(f"Predicted labels codes: {predicted_labels}")
+            self.plot_clusters(data, predicted_labels, n_components=self.n_clusters, title="Predicted Labels")
+
+            return predicted_labels, actual_labels.astype(str)
+
         else:
             score = silhouette_score(data, predicted_labels)
             print(f"Silhouette score: {score}")
-        # plot the clusters
-        self.plot_clusters(data, predicted_labels, self.n_clusters)
+            self.plot_clusters(data, predicted_labels, self.n_clusters)
 
-    def plot_clusters(self, data, labels, n_components=2):
+    def plot_clusters(self, data, labels, n_components=2, title="Clustering"):
         # Fit PCA to the data
         pca = PCA(n_components=n_components)
         x_pca = pca.fit_transform(data)
 
-        # Get the cluster labels and the number of clusters
-        n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-
         # Plot the data points colored by cluster
-        plt.scatter(x_pca[:, 0], x_pca[:, 1], c=labels, s=50, cmap='viridis')
-        plt.title(f'Clustering on PCA (Number of Clusters: {n_clusters})')
+        fig, ax = plt.subplots()
+        sc = plt.scatter(x_pca[:, 0], x_pca[:, 1], c=labels, s=50, cmap='viridis')
+
+        # Create a legend for the scatter plot
+        ax.legend(*sc.legend_elements())
+
+        plt.title(title)
         plt.xlabel('Principal Component 1')
         plt.ylabel('Principal Component 2')
 
@@ -55,4 +64,18 @@ class Clustering:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
 
-        plt.savefig('{}/plot_clusters.png'.format(folder_name))
+        now = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'{folder_name}/plot_clusters_{now}.png'
+
+        # Check if the file already exists
+        if os.path.exists(filename):
+            # If it does, add a counter to the filename
+            i = 1
+            while True:
+                new_filename = f'{folder_name}/plot_clusters_{now}_{i}.png'
+                if not os.path.exists(new_filename):
+                    filename = new_filename
+                    break
+                i += 1
+
+        plt.savefig(filename)
