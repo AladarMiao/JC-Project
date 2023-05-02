@@ -6,7 +6,7 @@ import json
 print(tf.config.list_physical_devices('GPU'))
 
 # Open the JSON file for reading
-with open('RunImageAE.json') as f:
+with open('JsonInputs/AutoencoderTrain.json') as f:
     # Load the contents of the file into a variable
     data = json.load(f)
 

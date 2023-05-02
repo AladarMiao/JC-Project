@@ -1,0 +1,30 @@
+{
+  "preprocessor_parameters": {
+    "is_image": true,
+    "image_train_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
+    "image_validation_path": "/mnt/c/Users/alada/Downloads/data/validation/DimpleDot",
+    "csv_train_path": "path/to/csv/file",
+    "csv_validation_path": "path/to/csv/file",
+    "drop_duplicates": true,
+    "impute_missing_values": "mean",
+    "new_width": 400,
+    "new_height": 400
+  },
+  "dimension_reduction_parameters": {
+    "algo": "PCA",
+    "principal_components": 2
+  },
+  "clustering_parameters": {
+    "algo": "kmeans",
+    "num_clusters": 10
+  },
+  "classifier_parameters": {
+    "algo": "Logistic Regression"
+  },
+  "DL_parameters": {
+    "model_type": "ConvolutionalAutoencoder",
+    "pretrained_model_path": "",
+    "batch_size": 5,
+    "epochs": 100
+  }
+}

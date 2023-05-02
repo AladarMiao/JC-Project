@@ -28,11 +28,11 @@ class Clustering:
             score = silhouette_score(data, predicted_labels)
             print(f"Silhouette score: {score}")
         # plot the clusters
-        self.plot_clusters(data, predicted_labels)
+        self.plot_clusters(data, predicted_labels, self.n_clusters)
 
-    def plot_clusters(self, data, labels):
+    def plot_clusters(self, data, labels, n_components=2):
         # Fit PCA to the data
-        pca = PCA(n_components=2)
+        pca = PCA(n_components=n_components)
         x_pca = pca.fit_transform(data)
 
         # Get the cluster labels and the number of clusters

@@ -1,8 +1,8 @@
 {
   "preprocessor_parameters": {
     "is_image": true,
-    "image_train_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
-    "image_validation_path": "/mnt/c/Users/alada/Downloads/data/validation/DimpleDot",
+    "image_train_path": "/mnt/c/Users/alada/Downloads/AETestData",
+    "image_validation_path": "/mnt/c/Users/alada/Downloads/data/train/DimpleDot",
     "csv_train_path": "path/to/csv/file",
     "csv_validation_path": "path/to/csv/file",
     "drop_duplicates": true,
@@ -12,11 +12,11 @@
   },
   "dimension_reduction_parameters": {
     "algo": "PCA",
-    "principal_components": 2
+    "principal_components": 4
   },
   "clustering_parameters": {
-    "algo": "k-means",
-    "num_clusters": 10
+    "algo": "kmeans",
+    "num_clusters": 4
   },
   "classifier_parameters": {
     "algo": "Logistic Regression"

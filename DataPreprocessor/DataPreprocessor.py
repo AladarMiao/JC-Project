@@ -8,10 +8,8 @@ import tensorflow as tf
 
 from Constants import TABULAR, IMAGE
 
-
 def isImage(filename):
     return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))
-
 
 class DataPreprocessor:
     def __init__(self, is_image_data, csv_train_path=None, csv_validation_path=None, image_train_path=None,
