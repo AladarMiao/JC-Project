@@ -15,4 +15,4 @@ __pycache__/
 *.h5
 *.idea/
 *.png
-
+*.csv

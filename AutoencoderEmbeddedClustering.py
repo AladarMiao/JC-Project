@@ -10,6 +10,7 @@ import keras
 from tensorflow.keras.losses import mean_absolute_error, mean_squared_error
 from keras.utils import custom_object_scope
 
+from ParameterAnalyzer.SHAPDeep import SHAPDeep
 
 # def copy_images(source_folder, target_folder):
 #     # Create the target folder if it doesn't exist
@@ -74,6 +75,7 @@ with custom_object_scope({'custom_loss': custom_loss}):
 layer_name = "max_pooling2d_2"
 intermediate_layer_model = tf.keras.Model(inputs=model.input, outputs=model.get_layer("max_pooling2d_2").output)
 
+
 # Use the intermediate layer model to get the output of the specific layer
 input_data = X_test # provide input data in the appropriate format
 print("input_data.shape", input_data.shape)
@@ -82,16 +84,6 @@ print("output_data.shape", output_data.shape)
 
 # Flatten the output_data to a 2D array
 output_data = output_data.reshape(output_data.shape[0], -1)
-#
-# dimension_reduction_parameters = data.get("dimension_reduction_parameters", {})
-# print("dimension_reduction_parameters", dimension_reduction_parameters)
-#
-# if dimension_reduction_parameters:
-#     if dimension_reduction_parameters.get("algo"):
-#         dim_reduction = get_dim_reduction_class(dimension_reduction_parameters.get("algo"),
-#                                                 dimension_reduction_parameters.get("principal_components"))
-#         output_data = dim_reduction.fit_transform(output_data)
-#         print("Data has been reshaped into a {} array with {} features".format(output_data.shape[0], output_data.shape[1]))
 
 clustering_parameters = data.get("clustering_parameters", {})
 print("clustering_parameters",  clustering_parameters)
@@ -101,3 +93,6 @@ if clustering_parameters.get("algo"):
                                       n_clusters=clustering_parameters.get("num_clusters"))
     print("Clustering after passing through the Autoencoder")
     clustering.cluster(output_data)
+
+shap_deep_analyzer = SHAPDeep(intermediate_layer_model, X_test) # TODO: running into errors, perhaps due to version conflicts
+shap_deep_analyzer.plot_explainer(X_test)

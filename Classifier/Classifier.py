@@ -12,6 +12,9 @@ class Classifier:
     def predict(self, X):
         return self.clf.predict(X)
 
+    def get_classifier(self):
+        return self.clf
+
     def score(self, X, y):
         y_pred = self.predict(X)
         print(accuracy_score(y, y_pred))
